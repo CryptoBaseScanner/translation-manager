@@ -1,0 +1,4 @@
+version: 1
+en:
+  translation:
+    key: hello world
