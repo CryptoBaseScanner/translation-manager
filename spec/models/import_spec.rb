@@ -21,7 +21,7 @@ module TranslationManager
 
     it { expect(import).to be_processing }
 
-    context 'when processing finished' do
+    describe '#import!' do
       before { import.import! }
 
       it { expect(import).to be_finished }
@@ -29,6 +29,21 @@ module TranslationManager
       it 'creates translations' do
         expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'en.translation.key').value)
           .to eq('hello world')
+      end
+
+      context 'when import new version' do
+        let(:import_v2) do
+          import = Import.new(namespace: 'test_namespace')
+          import.file.attach(
+            io: File.open("#{__dir__}/../files/translations_1.yml"),
+            filename: 'translations.yml',
+            content_type: 'application/yml'
+          )
+          import.save!
+          import
+        end
+
+        before { import_v2.import! }
       end
     end
   end

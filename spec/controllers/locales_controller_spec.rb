@@ -28,11 +28,15 @@ module TranslationManager
     end
 
     context 'when request translation' do
-      let(:translation) { create(:translation) }
-      before { get "/locales/#{translation.language}/#{translation.namespace}" }
+      let!(:translation_v1) { create(:translation, version: 1) }
+      let!(:translation_v2) { create(:translation, version: 2) }
 
-      it 'returns translations' do
-        expect(JSON.parse(response.body)[translation.key]).to eq(translation.value)
+      it 'returns translations according to version' do
+        get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
+        expect(JSON.parse(response.body)[translation_v1.key]).to eq(translation_v1.value)
+        get "/locales/v2/#{translation_v2.language}/#{translation_v2.namespace}"
+        expect(JSON.parse(response.body)[translation_v2.key]).to eq(translation_v2.value)
+        expect(JSON.parse(response.body)).not_to match(hash_including(translation_v1.key))
       end
     end
   end
