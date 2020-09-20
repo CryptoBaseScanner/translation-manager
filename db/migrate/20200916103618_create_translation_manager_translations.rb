@@ -12,6 +12,6 @@ class CreateTranslationManagerTranslations < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_index :translation_manager_translations, %i[key version namespace], name: 'main_index', unique: true
+    add_index :translation_manager_translations, %i[key version namespace language], name: 'main_index', unique: true
   end
 end
