@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_18_091229) do
+ActiveRecord::Schema.define(version: 2020_09_20_100937) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -48,7 +48,8 @@ ActiveRecord::Schema.define(version: 2020_09_18_091229) do
     t.string "namespace", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["key", "version", "namespace"], name: "main_index", unique: true
+    t.boolean "stale", default: false, null: false
+    t.index ["key", "version", "namespace", "language"], name: "main_index", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

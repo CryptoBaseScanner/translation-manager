@@ -1,8 +1,5 @@
 # TranslationManager
-Short description and motivation.
-
-## Usage
-How to use my plugin.
+Altrady app translations manager backend.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -10,19 +7,15 @@ Add this line to your application's Gemfile:
 ```ruby
 gem 'translation_manager'
 ```
-
-And then execute:
-```bash
-$ bundle
+ 
+Create config/initializers/translation_manager.rb with languages list
+```ruby
+TranslationManager.setup do |config|
+  config.languages = %i[es th kr]
+end
 ```
 
-Or install it yourself as:
-```bash
-$ gem install translation_manager
+Add mount to routes.rb
+```ruby
+mount TranslationManager::Engine => "/locales"
 ```
-
-## Contributing
-Contribution directions go here.
-
-## License
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
