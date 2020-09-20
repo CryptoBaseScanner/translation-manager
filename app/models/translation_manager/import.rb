@@ -7,15 +7,7 @@ module TranslationManager
 
     def import!
       data = flatten_hash(YAML.safe_load(file.download, [Symbol]))
-      data.each do |key, value|
-        Translation.create(
-          language: 'en',
-          namespace: namespace,
-          version: data['version'],
-          key: key,
-          value: value
-        )
-      end
+      data.each { |key, value| Translation.import(key, value, data['version'], namespace) }
       finished!
     end
 
