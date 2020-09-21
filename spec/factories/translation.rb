@@ -5,5 +5,6 @@ FactoryBot.define do
     version { 1 }
     language { 'en' }
     namespace { 'test_namespace' }
+    stale { false }
   end
 end
