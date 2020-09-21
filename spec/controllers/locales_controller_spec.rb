@@ -39,5 +39,16 @@ module TranslationManager
         expect(JSON.parse(response.body)).not_to match(hash_including(translation_v1.key))
       end
     end
+
+    describe 'GET stale' do
+      let!(:translation) { create(:translation, version: 1, stale: false) }
+      let!(:translation_stale) { create(:translation, version: 1, stale: true) }
+
+      before { get '/locales/v1/en/test_namespace/stale' }
+
+      it 'returns only stale translations' do
+        expect(JSON.parse(response.body).count).to eq(1)
+      end
+    end
   end
 end

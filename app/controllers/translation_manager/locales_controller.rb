@@ -6,6 +6,11 @@ module TranslationManager
       render json: Translation.where(permitted_params).pluck(:key, :value).to_h.to_json
     end
 
+    def stale
+      render json:
+        Translation.where(permitted_params.merge({ stale: true })).pluck(:key, :value).to_h.to_json
+    end
+
     def import
       translation_import = Import.new(namespace: params[:namespace])
       tempfile = Tempfile.new('translations.yml').tap do |f|
