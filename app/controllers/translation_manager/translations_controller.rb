@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module TranslationManager
-  class LocalesController < ApplicationController
-    def show
+  class TranslationsController < ApplicationController
+    def index
       render json: Translation.where(permitted_params).pluck(:key, :value).to_h.to_json
     end
 

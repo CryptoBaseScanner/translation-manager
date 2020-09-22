@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 module TranslationManager
-  RSpec.describe LocalesController, type: :request do
+  RSpec.describe TranslationsController, type: :request do
     include Engine.routes.url_helpers
 
     context 'when imports YAML' do
       before do
-        post '/locales/en/test_namespace/import',
+        post '/locales/v1/en/test_namespace/import',
              params: File.open("#{__dir__}/../files/translations.yml").read,
              headers: { 'CONTENT_TYPE': 'application/yaml' }
       end
