@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_20_100937) do
+ActiveRecord::Schema.define(version: 2020_09_21_094514) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -40,6 +40,15 @@ ActiveRecord::Schema.define(version: 2020_09_20_100937) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "translation_manager_suggestions", force: :cascade do |t|
+    t.string "suggestion"
+    t.integer "translation_manager_translation_id", null: false
+    t.integer "translator_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["translation_manager_translation_id"], name: "suggestion_translation"
+  end
+
   create_table "translation_manager_translations", force: :cascade do |t|
     t.string "key", null: false
     t.integer "version", null: false
@@ -53,4 +62,5 @@ ActiveRecord::Schema.define(version: 2020_09_20_100937) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "translation_manager_suggestions", "translation_manager_translations"
 end
