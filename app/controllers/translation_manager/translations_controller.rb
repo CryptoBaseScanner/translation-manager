@@ -3,7 +3,8 @@
 module TranslationManager
   class TranslationsController < ApplicationController
     def index
-      render json: Translation.where(permitted_params).pluck(:key, :value).to_h.to_json
+      render json: Translation.where(permitted_params)
+                              .map { |t| [t.key, t.approved_translation] }.to_h.to_json
     end
 
     def stale
