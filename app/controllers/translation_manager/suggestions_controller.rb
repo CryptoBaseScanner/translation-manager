@@ -2,7 +2,7 @@
 
 module TranslationManager
   class SuggestionsController < ApplicationController
-    def show
+    def index
       render json: Suggestion.where(translation_manager_translation_id: params[:translation_id]).to_json
     end
 
@@ -12,6 +12,10 @@ module TranslationManager
         translation_manager_translation_id: params[:translation_id],
         suggestion: params[:suggestion]
       )
+    end
+
+    def approve
+      Suggestion.find(params[:id]).approvals.create(approved_by: current_user.id)
     end
 
     private

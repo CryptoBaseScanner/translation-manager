@@ -5,12 +5,14 @@ require 'rails_helper'
 module TranslationManager
   RSpec.describe TranslationsController, type: :request do
     include Engine.routes.url_helpers
+    before do
+      allow_any_instance_of(::ApplicationController)
+        .to receive(:current_user).and_return(instance_double('User', id: 1))
+    end
 
     context 'POST #create' do
       let(:translation) { create(:translation) }
       before do
-        expect_any_instance_of(::ApplicationController)
-          .to receive(:current_user).and_return(instance_double('User', id: 1))
         post translation_suggestions_path(translation_id: translation.id,
                                           language: translation.language,
                                           namespace: translation.namespace,
@@ -42,6 +44,25 @@ module TranslationManager
       it 'returns suggestion' do
         expect(JSON.parse(response.body, symbolize_names: true).first)
           .to match(hash_including({ translator_id: 1, suggestion: suggestion.suggestion }))
+      end
+    end
+
+    context 'POST #approve' do
+      let(:translation) { create(:translation) }
+      let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
+
+      before do
+        post approve_translation_suggestion_path(translation_id: translation.id,
+                                                 language: translation.language,
+                                                 namespace: translation.namespace,
+                                                 version: translation.version,
+                                                 id: suggestion.id)
+
+      end
+
+      it 'marks suggestion as approved by translator' do
+        expect(suggestion.approved_by.count).to eq(1)
+        expect(response).to have_http_status(:success)
       end
     end
   end
