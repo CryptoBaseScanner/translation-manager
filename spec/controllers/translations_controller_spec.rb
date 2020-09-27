@@ -38,6 +38,41 @@ module TranslationManager
         expect(JSON.parse(response.body)[translation_v2.key]).to eq(translation_v2.value)
         expect(JSON.parse(response.body)).not_to match(hash_including(translation_v1.key))
       end
+
+      it 'returns translations with most approved suggestions' do
+        translation = create(:translation, version: 1)
+        suggestion = create(:suggestion, translation: translation)
+        suggestion2 = create(:suggestion, translation: translation)
+        suggestion.approvals.create(approved_by: 1)
+        suggestion2.approvals.create(approved_by: 2)
+        suggestion2.approvals.create(approved_by: 3)
+        get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
+        expect(JSON.parse(response.body)[translation.key]).to eq(suggestion2.suggestion)
+      end
+
+      it 'returns original translation when has suggestions but didn\'t approved any' do
+        translation = create(:translation, version: 1)
+        create(:suggestion, translation: translation)
+        create(:suggestion, translation: translation)
+        get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
+        expect(JSON.parse(response.body)[translation.key]).to eq(translation.value)
+      end
+
+      context 'translations N+1', :n_plus_one do
+        populate { |n| create_list(:translation, n) }
+
+        specify do
+          expect { '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
+        end
+      end
+
+      context 'suggestions N+1', :n_plus_one do
+        populate { |n| create_list(:suggestion, n, translation: translation_v1) }
+
+        specify do
+          expect { '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
+        end
+      end
     end
 
     describe 'GET stale' do
