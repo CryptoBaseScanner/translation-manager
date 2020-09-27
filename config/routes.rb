@@ -4,6 +4,10 @@ TranslationManager::Engine.routes.draw do
       get :stale
       post :import
     end
-    resource :suggestions
+    resources :suggestions do
+      member do
+        post :approve
+      end
+    end
   end
 end
