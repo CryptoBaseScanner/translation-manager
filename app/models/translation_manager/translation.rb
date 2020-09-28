@@ -16,14 +16,27 @@ module TranslationManager
 
     def self.import(key, value, version, namespace)
       (TranslationManager.config.languages + [:en]).each do |language|
-        translation = find_or_create_by!(
-          language: language,
+        translation_params = {
           namespace: namespace,
-          version: version,
-          key: key,
-          stale: language != :en
+          language: language,
+          key: key
+        }
+        translation = find_or_create_by!(
+          translation_params.merge({ stale: language != :en, version: version })
         )
-        translation.value = value
+        if language != :en
+          previous_translation = find_by(
+            translation_params.merge({ version: version - 1 })
+          )
+          if previous_translation
+            translation.value = previous_translation.value
+            translation.stale = false
+          else
+            translation.value = value
+          end
+        else
+          translation.value = value
+        end
         translation.save!
       end
     end
