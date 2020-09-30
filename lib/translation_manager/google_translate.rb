@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'google-cloud-translate'
 
 module TranslationManager
@@ -8,7 +10,8 @@ module TranslationManager
         credentials: TranslationManager.config.google_translate_credentials
       )
 
-      client.translate(value, from: 'en', to: to).text
+      client.translate(value.gsub(/{{(.+?)}}/, '<code>\1</code>'), from: 'en', to: to)
+        .text.gsub(/<code>(.+?)<\/code>/, '{{\1}}')
 
       # Google translate v3 client
       #
