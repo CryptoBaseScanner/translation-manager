@@ -4,6 +4,7 @@ require 'rails_helper'
 
 module TranslationManager
   RSpec.describe Import, type: :model do
+    before { allow(GoogleTranslate).to receive(:translate).and_return('translation by google') }
     let(:import) do
       import = Import.new(namespace: 'test_namespace')
       import.file.attach(

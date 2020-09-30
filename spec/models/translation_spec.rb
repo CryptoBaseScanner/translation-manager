@@ -2,14 +2,14 @@
 
 require 'rails_helper'
 
-TranslationManager.setup do |config|
-  config.languages = %i[es th kr]
-end
-
 module TranslationManager
   RSpec.describe Translation, type: :model do
     describe '#self.import' do
-      before { described_class.import('translation.key', 'hello world', 1, 'test_namespace') }
+      before do
+        allow(GoogleTranslate).to receive(:translate).and_return('translation by google')
+
+        described_class.import('translation.key', 'hello world', 1, 'test_namespace')
+      end
 
       it 'creates translations' do
         expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'translation.key').value)
@@ -23,6 +23,12 @@ module TranslationManager
         end
       end
 
+      it 'makes translations using google translate' do
+        TranslationManager.config.languages.each do |language|
+          translation = Translation.find_by(namespace: 'test_namespace', language: language, key: 'translation.key')
+          expect(translation.value).to eq('translation by google')
+        end
+      end
 
       context 'when gets existing key and version' do
         before { described_class.import('translation.key', 'test', 1, 'test_namespace') }
@@ -41,7 +47,6 @@ module TranslationManager
           translation.value = 'es translation'
           translation.save!
           described_class.import('translation.key', 'hello world', 2, 'test_namespace')
-
         end
 
         let(:translation) do
