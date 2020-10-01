@@ -14,9 +14,9 @@ module TranslationManager
                  .order('count_all DESC').first.suggestion
     end
 
-    def self.import(key, value, version, namespace)
+    def self.import(key, value, version, namespace, user_id)
       (TranslationManager.config.languages + [:en]).each do |language|
-        translation_params = { namespace: namespace, language: language, key: key }
+        translation_params = { namespace: namespace, language: language, key: key, translator_id: user_id }
         translation = find_or_create_by!(
           translation_params.merge({ stale: language != :en, version: version })
         )

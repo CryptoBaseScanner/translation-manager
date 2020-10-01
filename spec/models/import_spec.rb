@@ -23,13 +23,22 @@ module TranslationManager
     it { expect(import).to be_processing }
 
     describe '#import!' do
-      before { import.import! }
+      let(:user_id) { 1 }
+
+      before do
+        import.import!(user_id)
+      end
 
       it { expect(import).to be_finished }
 
       it 'creates translations' do
         expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'en.translation.key').value)
           .to eq('hello world')
+      end
+
+      it 'saves translator' do
+        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'en.translation.key')
+          .translator_id).to eq(user_id)
       end
     end
   end

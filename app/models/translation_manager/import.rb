@@ -5,9 +5,9 @@ module TranslationManager
     has_one_attached :file
     enum status: { processing: 'processing', finished: 'finished' }
 
-    def import!
+    def import!(user_id)
       data = flatten_hash(YAML.safe_load(file.download, [Symbol]))
-      data.each { |key, value| Translation.import(key, value, data['version'], namespace) }
+      data.each { |key, value| Translation.import(key, value, data['version'], namespace, user_id) }
       finished!
     end
 

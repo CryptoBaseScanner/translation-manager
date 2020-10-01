@@ -25,7 +25,7 @@ module TranslationManager
       )
       translation_import.save!
       tempfile.unlink
-      ImportJob.perform_later(translation_import.id)
+      ImportJob.perform_later(translation_import.id, current_user.id)
       render json: { translation_import_id: translation_import.id }
     end
 

@@ -5,10 +5,12 @@ require 'rails_helper'
 module TranslationManager
   RSpec.describe Translation, type: :model do
     describe '#self.import' do
+      let(:user_id) { 1 }
+
       before do
         allow(GoogleTranslate).to receive(:translate).and_return('translation by google')
 
-        described_class.import('translation.key', 'hello world', 1, 'test_namespace')
+        described_class.import('translation.key', 'hello world', 1, 'test_namespace', user_id)
       end
 
       it 'creates translations' do
@@ -31,7 +33,7 @@ module TranslationManager
       end
 
       context 'when gets existing key and version' do
-        before { described_class.import('translation.key', 'test', 1, 'test_namespace') }
+        before { described_class.import('translation.key', 'test', 1, 'test_namespace', user_id) }
 
         it 'updates existing translation' do
           expect(Translation.where(namespace: 'test_namespace', language: 'en', key: 'translation.key').count)
@@ -46,7 +48,7 @@ module TranslationManager
           translation = Translation.find_by(namespace: 'test_namespace', language: 'es', key: 'translation.key')
           translation.value = 'es translation'
           translation.save!
-          described_class.import('translation.key', 'hello world', 2, 'test_namespace')
+          described_class.import('translation.key', 'hello world', 2, 'test_namespace', user_id)
         end
 
         let(:translation) do

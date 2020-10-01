@@ -7,7 +7,12 @@ module TranslationManager
     include Engine.routes.url_helpers
 
     context 'when imports YAML' do
+      let(:user_id) { 1 }
+
       before do
+        allow_any_instance_of(::ApplicationController).to receive(:current_user)
+          .and_return(instance_double('User', id: user_id))
+
         post '/locales/v1/en/test_namespace/import',
              params: File.open("#{__dir__}/../files/translations.yml").read,
              headers: { 'CONTENT_TYPE': 'application/yaml' }
@@ -19,10 +24,10 @@ module TranslationManager
         expect(Import.where(id: translation_import_id)).to exist
       end
 
-      it 'queues an import job' do
+      it 'queues an import job with user_id' do
         assert_enqueued_with(
           job: ImportJob,
-          args: [translation_import_id]
+          args: [translation_import_id, user_id]
         )
       end
     end
