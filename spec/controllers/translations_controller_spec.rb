@@ -83,11 +83,16 @@ module TranslationManager
     describe 'GET stale' do
       let!(:translation) { create(:translation, version: 1, stale: false) }
       let!(:translation_stale) { create(:translation, version: 1, stale: true) }
+      let!(:suggestions) { create_list(:suggestion, 5, translation: translation_stale) }
 
       before { get '/locales/v1/en/test_namespace/stale' }
 
       it 'returns only stale translations' do
         expect(JSON.parse(response.body).count).to eq(1)
+      end
+
+      it 'returns suggestions for each translation' do
+        expect(JSON.parse(response.body).values.first['suggestions'].count).to eq(5)
       end
     end
   end
