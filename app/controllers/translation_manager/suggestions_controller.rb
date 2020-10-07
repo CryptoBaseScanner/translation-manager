@@ -15,7 +15,8 @@ module TranslationManager
     end
 
     def approve
-      Suggestion.find(params[:id]).approvals.create(approved_by: current_user.id)
+      suggestion = Suggestion.find(params[:id]).approvals.create(approved_by: current_user.id)
+      render json: { errors: suggestion.errors } unless suggestion.valid?
     end
 
     private

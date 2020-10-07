@@ -57,12 +57,22 @@ module TranslationManager
                                                  namespace: translation.namespace,
                                                  version: translation.version,
                                                  id: suggestion.id)
-
       end
 
       it 'marks suggestion as approved by translator' do
         expect(suggestion.approved_by.count).to eq(1)
         expect(response).to have_http_status(:success)
+      end
+
+      it 'approves only once for the same user' do
+        post approve_translation_suggestion_path(translation_id: translation.id,
+                                                 language: translation.language,
+                                                 namespace: translation.namespace,
+                                                 version: translation.version,
+                                                 id: suggestion.id)
+        expect(suggestion.approved_by.count).to eq(1)
+        expect(JSON.parse(response.body, symbolize_names: true))
+          .to eq({ errors: { approved_by: ['has already been taken'] } })
       end
     end
   end
