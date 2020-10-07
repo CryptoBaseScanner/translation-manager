@@ -20,13 +20,16 @@ module TranslationManager
         f << request.body
         f.close
       end
-      translation_import.file.attach(
-        io: tempfile.open,
-        filename: 'translations.yml',
-        content_type: 'application/yml'
-      )
-      translation_import.save!
-      tempfile.unlink
+      begin
+        translation_import.file.attach(
+          io: tempfile.open,
+          filename: 'translations.yml',
+          content_type: 'application/yml'
+        )
+        translation_import.save!
+      ensure
+        tempfile.unlink
+      end
       ImportJob.perform_later(translation_import.id, current_user.id)
       render json: { translation_import_id: translation_import.id }
     end
