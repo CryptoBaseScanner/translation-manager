@@ -6,12 +6,15 @@ module TranslationManager
     enum status: { processing: 'processing', finished: 'finished' }
 
     def import!(user_id)
-      data = flatten_hash(YAML.safe_load(file.download, [Symbol]))
-      data.each { |key, value| Translation.import(key, value, data['version'], namespace, user_id) }
+      Translation.bulk_import(data, data['version'], namespace, user_id)
       finished!
     end
 
     private
+
+    def data
+      flatten_hash(YAML.safe_load(file.download, [Symbol]))
+    end
 
     def flatten_hash(hash)
       hash.each_with_object({}) do |(k, v), h|
