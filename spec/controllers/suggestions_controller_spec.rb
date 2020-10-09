@@ -13,10 +13,7 @@ module TranslationManager
     context 'POST #create' do
       let(:translation) { create(:translation) }
       before do
-        post translation_suggestions_path(translation_id: translation.id,
-                                          language: translation.language,
-                                          namespace: translation.namespace,
-                                          version: translation.version),
+        post translation_suggestions_path(translation_id: translation.id),
              params: { suggestion: 'my suggestion' }
       end
 
@@ -35,10 +32,7 @@ module TranslationManager
       let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
 
       before do
-        get translation_suggestions_path(translation_id: translation.id,
-                                         language: translation.language,
-                                         namespace: translation.namespace,
-                                         version: translation.version)
+        get translation_suggestions_path(translation_id: translation.id)
       end
 
       it 'returns suggestion' do
@@ -52,11 +46,7 @@ module TranslationManager
       let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
 
       before do
-        post approve_translation_suggestion_path(translation_id: translation.id,
-                                                 language: translation.language,
-                                                 namespace: translation.namespace,
-                                                 version: translation.version,
-                                                 id: suggestion.id)
+        post approve_suggestion_path(id: suggestion.id)
       end
 
       it 'marks suggestion as approved by translator' do
@@ -65,11 +55,7 @@ module TranslationManager
       end
 
       it 'approves only once for the same user' do
-        post approve_translation_suggestion_path(translation_id: translation.id,
-                                                 language: translation.language,
-                                                 namespace: translation.namespace,
-                                                 version: translation.version,
-                                                 id: suggestion.id)
+        post approve_suggestion_path(id: suggestion.id)
         expect(suggestion.approved_by.count).to eq(1)
         expect(JSON.parse(response.body, symbolize_names: true))
           .to eq({ errors: { approved_by: ['has already been taken'] } })
