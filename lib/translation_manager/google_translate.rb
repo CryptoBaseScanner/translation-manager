@@ -10,6 +10,8 @@ module TranslationManager
         credentials: TranslationManager.config.google_translate_credentials
       )
 
+      return value unless value.is_a?(String)
+
       client.translate(value.gsub(/{{(.+?)}}/, '<code>\1</code>'), from: 'en', to: to)
         .text.gsub(/<code>(.+?)<\/code>/, '{{\1}}')
 
