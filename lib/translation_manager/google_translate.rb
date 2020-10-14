@@ -5,12 +5,13 @@ require 'google-cloud-translate'
 module TranslationManager
   class GoogleTranslate
     def self.translate(value, to)
+      return value if to == 'en'
+      return value unless value.is_a?(String)
+
       client = Google::Cloud::Translate.translation_v2_service(
         project_id: TranslationManager.config.google_translate_credentials[:project_id],
         credentials: TranslationManager.config.google_translate_credentials
       )
-
-      return value unless value.is_a?(String)
 
       client.translate(value.gsub(/{{(.+?)}}/, '<code>\1</code>'), from: 'en', to: to)
         .text.gsub(/<code>(.+?)<\/code>/, '{{\1}}')
