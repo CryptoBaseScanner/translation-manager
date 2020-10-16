@@ -41,7 +41,7 @@ module TranslationManager
           )
         end
       end.flatten
-      upsert_all(en_translations + translations_other, unique_by: %i[key version namespace language])
+      upsert_all(en_translations + translations_other)
     end
 
     def self.fetch_previous_values(namespace, version)
