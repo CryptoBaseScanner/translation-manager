@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_16_111601) do
+ActiveRecord::Schema.define(version: 2020_10_16_112722) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 2020_10_16_111601) do
   end
 
   create_table "translation_manager_suggestions", force: :cascade do |t|
-    t.string "suggestion"
+    t.text "suggestion"
     t.integer "translation_manager_translation_id", null: false
     t.integer "translator_id"
     t.datetime "created_at", precision: 6, null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2020_10_16_111601) do
   create_table "translation_manager_translations", force: :cascade do |t|
     t.string "key", null: false
     t.integer "version", null: false
-    t.string "value", default: "", null: false
+    t.text "value", null: false
     t.string "language", null: false
     t.string "namespace", null: false
     t.datetime "created_at", precision: 6, null: false
