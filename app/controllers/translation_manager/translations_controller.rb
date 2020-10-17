@@ -3,8 +3,16 @@
 module TranslationManager
   class TranslationsController < ApplicationController
     def index
-      render json: Translation.where(permitted_params)
-                              .map { |t| [t.key, t.approved_translation] }.to_h.to_json
+      render json:
+        Translation.from(
+          Translation.left_joins(suggestions: [:approvals]).where(permitted_params)
+            .group('translation_manager_suggestions.suggestion')
+            .select('*',
+                    'count(translation_manager_approvals.translation_manager_suggestion_id) as approvals_count')
+            .order('approvals_count DESC')
+        )
+                   .group('key').pluck(:key, :suggestion, :value, :approvals_count)
+                   .map { |t| [t[0], t[3].zero? ? t[2] : t[1]] }.to_h.to_json
     end
 
     def stale

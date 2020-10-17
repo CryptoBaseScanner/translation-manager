@@ -5,15 +5,6 @@ module TranslationManager
     validates :key, uniqueness: { scope: %i[version namespace language] }
     has_many :suggestions, foreign_key: 'translation_manager_translation_id'
 
-    def approved_translation
-      return value unless suggestions.approved.any?
-
-      suggestions.joins(:approvals)
-                 .select('translation_manager_suggestions.suggestion, count(1) as count_all')
-                 .group('translation_manager_suggestions.suggestion')
-                 .order('count_all DESC').first.suggestion
-    end
-
     def self.bulk_import(key_values, version, namespace, user_id)
       previous_values = fetch_previous_values(namespace, version)
       en_translations = key_values.map do |key, value|

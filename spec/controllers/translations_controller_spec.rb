@@ -67,7 +67,7 @@ module TranslationManager
         populate { |n| create_list(:translation, n) }
 
         specify do
-          expect { '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
+          expect { get '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
         end
       end
 
@@ -75,7 +75,7 @@ module TranslationManager
         populate { |n| create_list(:suggestion, n, translation: translation_v1) }
 
         specify do
-          expect { '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
+          expect { get '/locales/v1/en/test_namespace' }.to perform_constant_number_of_queries
         end
       end
     end
