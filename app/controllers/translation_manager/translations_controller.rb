@@ -4,15 +4,10 @@ module TranslationManager
   class TranslationsController < ApplicationController
     def index
       render json:
-        Translation.from(
-          Translation.left_joins(suggestions: [:approvals]).where(permitted_params)
-            .group('translation_manager_suggestions.suggestion')
-            .select('*',
-                    'count(translation_manager_approvals.translation_manager_suggestion_id) as approvals_count')
-            .order('approvals_count DESC')
-        )
-                   .group('key').pluck(:key, :suggestion, :value, :approvals_count)
-                   .map { |t| [t[0], t[3].zero? ? t[2] : t[1]] }.to_h.to_json
+        Translation.joins(
+          'LEFT OUTER JOIN translation_manager_suggestions ON (translation_manager_suggestions.translation_manager_translation_id = translation_manager_translations.id AND translation_manager_suggestions.approved = true)'
+        ).where(permitted_params).group(:key).pluck(:key, :suggestion, :value)
+                   .map { |t| [t[0], t[1] || t[2]] }.to_h.to_json
     end
 
     def stale

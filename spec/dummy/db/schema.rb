@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_16_112722) do
+ActiveRecord::Schema.define(version: 2020_10_18_070524) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 2020_10_16_112722) do
     t.integer "translator_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "approvals_count"
+    t.boolean "approved"
     t.index ["translation_manager_translation_id"], name: "suggestion_translation"
   end
 
@@ -67,8 +69,8 @@ ActiveRecord::Schema.define(version: 2020_10_16_112722) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "stale", default: false, null: false
     t.integer "translator_id"
+    t.index ["key", "version", "namespace", "language"], name: "main_index", unique: true
     t.index ["key", "version", "namespace", "language"], name: "main_key", unique: true
-    t.index ["version", "namespace", "language"], name: "main_index", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
