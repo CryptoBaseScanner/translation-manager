@@ -6,8 +6,9 @@ module TranslationManager
     has_many :suggestions, foreign_key: 'translation_manager_translation_id'
 
     def update_approved_suggestion!
-      max_approvals = suggestions.pluck('MAX(approvals_count)').first
-      suggestions.update_all(['approved = (approvals_count == ?)', max_approvals])
+      the_most_approved = suggestions.group(:approvals_count).order(approvals_count: :desc).first
+      the_most_approved.update(approved: true)
+      suggestions.where.not(id: the_most_approved).update_all(approved: false)
     end
 
     def self.bulk_import(key_values, version, namespace, user_id)
