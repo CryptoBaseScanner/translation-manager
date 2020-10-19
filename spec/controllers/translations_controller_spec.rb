@@ -55,12 +55,12 @@ module TranslationManager
         expect(JSON.parse(response.body)[translation.key]).to eq(suggestion2.suggestion)
       end
 
-      it 'returns original translation when has suggestions but didn\'t approved any' do
+      it 'returns first suggestion when suggestion didn\'t approved yet' do
         translation = create(:translation, version: 1)
-        create(:suggestion, translation: translation)
+        suggestion = create(:suggestion, translation: translation)
         create(:suggestion, translation: translation)
         get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
-        expect(JSON.parse(response.body)[translation.key]).to eq(translation.value)
+        expect(JSON.parse(response.body)[translation.key]).to eq(suggestion.suggestion)
       end
 
       context 'translations N+1', :n_plus_one do
