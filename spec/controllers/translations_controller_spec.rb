@@ -94,6 +94,14 @@ module TranslationManager
       it 'returns suggestions for each translation' do
         expect(JSON.parse(response.body).values.first['suggestions'].count).to eq(5)
       end
+
+      context 'translations N+1', :n_plus_one do
+        populate { |n| create_list(:translation, n, stale: true) }
+
+        specify do
+          expect { get '/locales/v1/en/test_namespace/stale' }.to perform_constant_number_of_queries
+        end
+      end
     end
   end
 end

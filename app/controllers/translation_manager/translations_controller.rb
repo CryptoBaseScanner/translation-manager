@@ -15,9 +15,9 @@ module TranslationManager
 
     def stale
       render json:
-        Translation.where(permitted_params.merge({ stale: true }))
+        Translation.includes(:suggestions).where(permitted_params.merge({ stale: true }))
                    .map { |t| [t.key, { value: t.value, suggestions: t.suggestions.pluck(:id, :suggestion) }] }
-                   .to_h.to_json
+                   .to_h
     end
 
     def import
