@@ -38,7 +38,11 @@ module TranslationManager
           )
         end
       end.flatten
-      upsert_all(en_translations + translations_other)
+      if ActiveRecord::Base.connection.instance_of?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
+        upsert_all(en_translations + translations_other)
+      else
+        upsert_all(en_translations + translations_other, unique_by: %i[key version namespace language])
+      end
     end
 
     def self.fetch_previous_values(namespace, version)
