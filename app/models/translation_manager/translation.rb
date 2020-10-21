@@ -48,9 +48,7 @@ module TranslationManager
 
     def self.fetch_previous_values(namespace, version)
       where(namespace: namespace, version: version - 1)
-        .map { |t| [t.language, [t.translation_key, t.value]] }
-        .group_by(&:first)
-        .map { |k, v| [k, v.map(&:last).to_h] }.to_h
+        .each_with_object({}) { |t, h| h[t.language] ||= {}; h[t.language][t.translation_key] = t.value }
     end
   end
 end
