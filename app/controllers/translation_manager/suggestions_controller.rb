@@ -4,12 +4,12 @@ module TranslationManager
   class SuggestionsController < ApplicationController
     def index
       render json: Suggestion.where(
-        translation: Translation.where(permitted_params.merge(key: params[:translation_key]))
+        translation: Translation.where(permitted_params)
       )
     end
 
     def create
-      Translation.find_by(permitted_params.merge(key: params[:translation_key])).suggestions.create(
+      Translation.find_by(permitted_params).suggestions.create(
         translator_id: current_user.id,
         suggestion: params[:suggestion]
       )
@@ -23,7 +23,7 @@ module TranslationManager
     private
 
     def permitted_params
-      params.permit(:language, :namespace, :version)
+      params.permit(:language, :namespace, :version, :translation_key)
     end
   end
 end

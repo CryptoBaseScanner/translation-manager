@@ -13,7 +13,7 @@ module TranslationManager
     context 'POST #create' do
       let(:translation) { create(:translation) }
       before do
-        post "/locales/v1/en/test_namespace/#{translation.key}/suggestions",
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions",
              params: { suggestion: 'my suggestion' }
 
         # post translation_suggestions_path(translation_id: translation.id),
@@ -35,7 +35,7 @@ module TranslationManager
       let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
 
       before do
-        get "/locales/v1/en/test_namespace/#{translation.key}/suggestions"
+        get "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions"
       end
 
       it 'returns suggestion' do
@@ -49,7 +49,7 @@ module TranslationManager
       let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
 
       before do
-        post "/locales/v1/en/test_namespace/#{translation.key}/suggestions/#{suggestion.id}/approve"
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/approve"
       end
 
       it 'marks suggestion as approved by translator' do
@@ -58,7 +58,7 @@ module TranslationManager
       end
 
       it 'approves only once for the same user' do
-        post "/locales/v1/en/test_namespace/#{translation.key}/suggestions/#{suggestion.id}/approve"
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/approve"
         expect(suggestion.approved_by.count).to eq(1)
         expect(JSON.parse(response.body, symbolize_names: true))
           .to eq({ errors: { approved_by: ['has already been taken'] } })

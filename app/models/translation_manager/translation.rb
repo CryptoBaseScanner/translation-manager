@@ -2,7 +2,7 @@
 
 module TranslationManager
   class Translation < ApplicationRecord
-    validates :key, uniqueness: { scope: %i[version namespace language] }
+    validates :translation_key, uniqueness: { scope: %i[version namespace language] }
     has_many :suggestions, foreign_key: 'translation_manager_translation_id'
 
     def update_approved_suggestion!
@@ -17,7 +17,7 @@ module TranslationManager
         {
           namespace: namespace,
           language: 'en',
-          key: key,
+          translation_key: key,
           translator_id: user_id,
           value: value,
           stale: false,
@@ -28,7 +28,7 @@ module TranslationManager
       end
       translations_other = TranslationManager.config.languages.map do |language|
         en_translations.map do |translation|
-          previous_value = previous_values.fetch(language.to_s, nil)&.fetch(translation[:key], nil)
+          previous_value = previous_values.fetch(language.to_s, nil)&.fetch(translation[:translation_key], nil)
           translation.merge(
             {
               value: previous_value || GoogleTranslate.translate(translation[:value], language),
@@ -42,13 +42,13 @@ module TranslationManager
         ActiveRecord::Base.connection.instance_of?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
         upsert_all(en_translations + translations_other)
       else
-        upsert_all(en_translations + translations_other, unique_by: %i[key version namespace language])
+        upsert_all(en_translations + translations_other, unique_by: %i[translation_key version namespace language])
       end
     end
 
     def self.fetch_previous_values(namespace, version)
       where(namespace: namespace, version: version - 1)
-        .map { |t| [t.language, [t.key, t.value]] }
+        .map { |t| [t.language, [t.translation_key, t.value]] }
         .group_by(&:first)
         .map { |k, v| [k, v.map(&:last).to_h] }.to_h
     end

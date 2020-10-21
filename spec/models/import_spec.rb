@@ -32,12 +32,12 @@ module TranslationManager
       it { expect(import).to be_finished }
 
       it 'creates translations' do
-        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'en.translation.key').value)
+        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', translation_key: 'en.translation.key').value)
           .to eq('hello world')
       end
 
       it 'saves translator' do
-        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'en.translation.key')
+        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', translation_key: 'en.translation.key')
           .translator_id).to eq(user_id)
       end
     end

@@ -12,20 +12,20 @@ module TranslationManager
       end
 
       it 'creates translations' do
-        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'translation.key').value)
+        expect(Translation.find_by(namespace: 'test_namespace', language: 'en', translation_key: 'translation.key').value)
           .to eq('hello world')
       end
 
       it 'makes translations using google translate' do
         TranslationManager.config.languages.each do |language|
-          translation = Translation.find_by(namespace: 'test_namespace', language: language, key: 'translation.key')
+          translation = Translation.find_by(namespace: 'test_namespace', language: language, translation_key: 'translation.key')
           expect(translation.value).to eq('translation by google')
         end
       end
 
       it 'marks translations for other languages as stale if keys didn\'t exist in previous version' do
         TranslationManager.config.languages.each do |language|
-          translation = Translation.find_by(namespace: 'test_namespace', language: language, key: 'translation.key')
+          translation = Translation.find_by(namespace: 'test_namespace', language: language, translation_key: 'translation.key')
           expect(translation.stale).to be_truthy
         end
       end
@@ -34,16 +34,16 @@ module TranslationManager
         before { described_class.bulk_import({ 'translation.key' => 'test' }, 1, 'test_namespace', 1) }
 
         it 'updates existing translation' do
-          expect(Translation.where(namespace: 'test_namespace', language: 'en', key: 'translation.key').count)
+          expect(Translation.where(namespace: 'test_namespace', language: 'en', translation_key: 'translation.key').count)
             .to eq(1)
-          expect(Translation.find_by(namespace: 'test_namespace', language: 'en', key: 'translation.key').value)
+          expect(Translation.find_by(namespace: 'test_namespace', language: 'en', translation_key: 'translation.key').value)
             .to eq('test')
         end
       end
 
       context 'when import new version' do
         before do
-          translation = Translation.find_by(namespace: 'test_namespace', language: 'es', key: 'translation.key')
+          translation = Translation.find_by(namespace: 'test_namespace', language: 'es', translation_key: 'translation.key')
           translation.value = 'es translation'
           translation.save!
 
@@ -53,7 +53,7 @@ module TranslationManager
         let(:translation) do
           Translation.find_by(namespace: 'test_namespace',
                               language: 'es',
-                              key: 'translation.key',
+                              translation_key: 'translation.key',
                               version: 2)
         end
 

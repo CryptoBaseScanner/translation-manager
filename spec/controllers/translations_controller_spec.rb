@@ -38,10 +38,10 @@ module TranslationManager
 
       it 'returns translations according to version' do
         get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
-        expect(JSON.parse(response.body)[translation_v1.key]).to eq(translation_v1.value)
+        expect(JSON.parse(response.body)[translation_v1.translation_key]).to eq(translation_v1.value)
         get "/locales/v2/#{translation_v2.language}/#{translation_v2.namespace}"
-        expect(JSON.parse(response.body)[translation_v2.key]).to eq(translation_v2.value)
-        expect(JSON.parse(response.body)).not_to match(hash_including(translation_v1.key))
+        expect(JSON.parse(response.body)[translation_v2.translation_key]).to eq(translation_v2.value)
+        expect(JSON.parse(response.body)).not_to match(hash_including(translation_v1.translation_key))
       end
 
       it 'returns translations with most approved suggestions' do
@@ -52,7 +52,7 @@ module TranslationManager
         suggestion2.approvals.create(approved_by: 2)
         suggestion2.approvals.create(approved_by: 3)
         get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
-        expect(JSON.parse(response.body)[translation.key]).to eq(suggestion2.suggestion)
+        expect(JSON.parse(response.body)[translation.translation_key]).to eq(suggestion2.suggestion)
       end
 
       it 'returns first suggestion when suggestion didn\'t approved yet' do
@@ -60,7 +60,7 @@ module TranslationManager
         suggestion = create(:suggestion, translation: translation)
         create(:suggestion, translation: translation)
         get "/locales/v1/#{translation_v1.language}/#{translation_v1.namespace}"
-        expect(JSON.parse(response.body)[translation.key]).to eq(suggestion.suggestion)
+        expect(JSON.parse(response.body)[translation.translation_key]).to eq(suggestion.suggestion)
       end
 
       context 'translations N+1', :n_plus_one do

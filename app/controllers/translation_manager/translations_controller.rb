@@ -7,7 +7,7 @@ module TranslationManager
         Translation.left_outer_joins(:suggestions)
                    .where(permitted_params)
                    .where(translation_manager_suggestions: { approved: [nil, true] })
-                   .pluck(:key, :suggestion, :value)
+                   .pluck(:translation_key, :suggestion, :value)
                    .each_with_object({}) { |(key, suggestion, value), hash|
                      hash[key] = suggestion || value
                    }
@@ -16,7 +16,7 @@ module TranslationManager
     def stale
       render json:
         Translation.includes(:suggestions).where(permitted_params.merge({ stale: true }))
-                   .map { |t| [t.key, { value: t.value, suggestions: t.suggestions.pluck(:id, :suggestion) }] }
+                   .map { |t| [t.translation_key, { value: t.value, suggestions: t.suggestions.pluck(:id, :suggestion) }] }
                    .to_h
     end
 
