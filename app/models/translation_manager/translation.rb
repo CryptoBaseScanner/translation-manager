@@ -38,7 +38,8 @@ module TranslationManager
           )
         end
       end.flatten
-      if ActiveRecord::Base.connection.instance_of?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
+      if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter) &&
+        ActiveRecord::Base.connection.instance_of?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
         upsert_all(en_translations + translations_other)
       else
         upsert_all(en_translations + translations_other, unique_by: %i[key version namespace language])

@@ -1,5 +1,5 @@
 TranslationManager::Engine.routes.draw do
-  resources :translations, path: '/v:version/:language/:namespace' do
+  resources :translations, path: '/v:version/:language/:namespace', param: :key do
     collection do
       get :stale
       post :import
