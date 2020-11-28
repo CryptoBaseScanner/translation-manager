@@ -9,10 +9,23 @@ module TranslationManager
       finished!
     end
 
+
+    def file=(file)
+      if file.is_a?(String)
+        content = file
+      elsif file.respond_to?(:read)
+        content = file.read
+      else
+        raise "Invalid import format"
+      end
+
+      write_attribute(:file, Base64.encode64(content))
+    end
+
     private
 
     def data
-      flatten_hash(YAML.safe_load(file, [Symbol]))
+      flatten_hash(YAML.safe_load(Base64.decode64(file), [Symbol]))
     end
 
     def flatten_hash(hash)
