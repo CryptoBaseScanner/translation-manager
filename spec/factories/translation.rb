@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :translation, class: TranslationManager::Translation do
-    sequence(:translation_key) { |n| "key_#{n}" }
+    sequence(:translation_key) { |n| "nested.key_#{n}" }
     sequence(:value) { |n| "value_#{n}" }
     version { 1 }
     language { 'en' }
