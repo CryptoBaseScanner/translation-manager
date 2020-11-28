@@ -14,7 +14,7 @@ module TranslationManager
           .and_return(instance_double('User', id: user_id))
 
         post '/locales/v1/en/test_namespace/import',
-             params: File.open("#{__dir__}/../files/translations.yml").read,
+             params: File.read("#{__dir__}/../files/translations.yml"),
              headers: { 'CONTENT_TYPE': 'application/yaml' }
       end
 

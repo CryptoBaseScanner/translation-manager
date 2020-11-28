@@ -4,40 +4,27 @@ module TranslationManager
   class TranslationsController < ApplicationController
     def index
       render json:
-        Translation.left_outer_joins(:suggestions)
-                   .where(permitted_params)
-                   .where(translation_manager_suggestions: { approved: [nil, true] })
-                   .pluck(:translation_key, :suggestion, :value)
-                   .each_with_object({}) { |(key, suggestion, value), hash|
-                     hash[key] = suggestion || value
-                   }
+               Translation.left_outer_joins(:suggestions)
+                 .where(permitted_params)
+                 .where(translation_manager_suggestions: { approved: [nil, true] })
+                 .pluck(:translation_key, :suggestion, :value)
+                 .each_with_object({}) { |(key, suggestion, value), hash|
+                   hash[key] = suggestion || value
+                 }
     end
 
     def stale
       render json:
-        Translation
-          .includes(:suggestions).where(permitted_params.merge({ stale: true }))
-          .each_with_object({}) { |t, h|
-            h[t.translation_key] = { value: t.value, suggestions: t.suggestions.pluck(:id, :suggestion) }
-          }
+               Translation
+                 .includes(:suggestions).where(permitted_params.merge({ stale: true }))
+                 .each_with_object({}) { |t, h|
+                   h[t.translation_key] = { value: t.value, suggestions: t.suggestions.pluck(:id, :suggestion) }
+                 }
     end
 
     def import
-      translation_import = Import.new(namespace: params[:namespace])
-      tempfile = Tempfile.new('translations.yml').tap do |f|
-        f << request.body
-        f.close
-      end
-      begin
-        translation_import.file.attach(
-          io: tempfile.open,
-          filename: 'translations.yml',
-          content_type: 'application/yml'
-        )
-        translation_import.save!
-      ensure
-        tempfile.unlink
-      end
+      translation_import = Import.create(namespace: params[:namespace], file: request.body)
+
       ImportJob.perform_later(translation_import.id, current_user.id)
       render json: { translation_import_id: translation_import.id }
     end

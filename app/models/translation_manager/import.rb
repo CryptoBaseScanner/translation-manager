@@ -2,7 +2,6 @@
 
 module TranslationManager
   class Import < ApplicationRecord
-    has_one_attached :file
     enum status: { processing: 'processing', finished: 'finished' }
 
     def import!(user_id)
@@ -13,7 +12,7 @@ module TranslationManager
     private
 
     def data
-      flatten_hash(YAML.safe_load(file.download, [Symbol]))
+      flatten_hash(YAML.safe_load(file, [Symbol]))
     end
 
     def flatten_hash(hash)

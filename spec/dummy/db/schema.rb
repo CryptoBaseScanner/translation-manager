@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_21_103925) do
+ActiveRecord::Schema.define(version: 2020_11_28_112814) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2020_10_21_103925) do
     t.string "namespace"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "file", limit: 5242880
   end
 
   create_table "translation_manager_suggestions", force: :cascade do |t|
