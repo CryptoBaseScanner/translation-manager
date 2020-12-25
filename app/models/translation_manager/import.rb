@@ -9,7 +9,6 @@ module TranslationManager
       finished!
     end
 
-
     def file=(file)
       if file.is_a?(String)
         content = file

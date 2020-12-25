@@ -2,6 +2,8 @@
 
 module TranslationManager
   class SuggestionsController < ApplicationController
+    before_action :authenticate!, only: [:create, :approve]
+
     def index
       render json: Suggestion.where(
         translation: Translation.where(permitted_params)

@@ -1,5 +1,11 @@
 module TranslationManager
   class ApplicationController < ::ApplicationController
-    protect_from_forgery with: :exception
+    protected
+
+    def authenticate!
+      if current_user.blank?
+        head :forbidden
+      end
+    end
   end
 end

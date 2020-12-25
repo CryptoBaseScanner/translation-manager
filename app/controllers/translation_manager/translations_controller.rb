@@ -2,6 +2,8 @@
 
 module TranslationManager
   class TranslationsController < ApplicationController
+    before_action :authenticate!, only: :import
+
     def index
       render json:
                Translation.left_outer_joins(:suggestions)
