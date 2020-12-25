@@ -12,4 +12,12 @@ module TranslationManager
   def self.config
     Rails.application.config
   end
+
+  def self.base_controller
+    if config.translation_base_controller
+      config.translation_base_controller.constantize
+    else
+      ::ApplicationController
+    end
+  end
 end

@@ -6,7 +6,7 @@ module TranslationManager
     has_many :suggestions, foreign_key: 'translation_manager_translation_id'
 
     def update_approved_suggestion!
-      the_most_approved = suggestions.group(:approvals_count).order(approvals_count: :desc).first
+      the_most_approved = suggestions.order(approvals_count: :desc).first
       the_most_approved.update(approved: true)
       suggestions.where.not(id: the_most_approved).update_all(approved: false)
     end

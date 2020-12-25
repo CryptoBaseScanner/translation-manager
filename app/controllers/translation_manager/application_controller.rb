@@ -1,5 +1,5 @@
 module TranslationManager
-  class ApplicationController < ::ApplicationController
+  class ApplicationController < TranslationManager.base_controller
     protected
 
     def authenticate!

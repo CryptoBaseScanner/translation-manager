@@ -3,4 +3,5 @@ require "translation_manager/google_translate"
 
 module TranslationManager
   # Your code goes here...
+  #
 end
