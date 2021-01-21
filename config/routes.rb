@@ -8,6 +8,7 @@ TranslationManager::Engine.routes.draw do
     resources :suggestions, shallow: false do
       member do
         post :approve
+        post :dislike
       end
     end
   end

@@ -5,8 +5,9 @@ module TranslationManager
     validates :translation_key, uniqueness: { scope: %i[version namespace language] }
     has_many :suggestions, foreign_key: 'translation_manager_translation_id'
 
-    def update_approved_suggestion!
-      the_most_approved = suggestions.order(approvals_count: :desc).first
+    def update_suggestion_vote!
+      suggestions.update_all(Arel.sql("vote_sum = approvals_count - dislikes_count"))
+      the_most_approved = suggestions.order(vote_sum: :desc).first
       the_most_approved.update(approved: true)
       suggestions.where.not(id: the_most_approved).update_all(approved: false)
     end

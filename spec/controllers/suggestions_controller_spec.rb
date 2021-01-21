@@ -64,5 +64,47 @@ module TranslationManager
           .to eq({ errors: { approved_by: ['has already been taken'] } })
       end
     end
+
+    context 'POST #approve' do
+      let(:translation) { create(:translation) }
+      let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
+
+      before do
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/approve"
+      end
+
+      it 'marks suggestion as approved by translator' do
+        expect(suggestion.approved_by.count).to eq(1)
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'approves only once for the same user' do
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/approve"
+        expect(suggestion.approved_by.count).to eq(1)
+        expect(JSON.parse(response.body, symbolize_names: true))
+          .to eq({ errors: { approved_by: ['has already been taken'] } })
+      end
+    end
+
+    context 'POST #dislike' do
+      let(:translation) { create(:translation) }
+      let!(:suggestion) { create(:suggestion, translator_id: 1, translation: translation) }
+
+      before do
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/dislike"
+      end
+
+      it 'marks suggestion as disliked by translator' do
+        expect(suggestion.disliked_by.count).to eq(1)
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'dislikes only once for the same user' do
+        post "/locales/v1/en/test_namespace/#{translation.translation_key}/suggestions/#{suggestion.id}/dislike"
+        expect(suggestion.disliked_by.count).to eq(1)
+        expect(JSON.parse(response.body, symbolize_names: true))
+          .to eq({ errors: { disliked_by: ['has already been taken'] } })
+      end
+    end
   end
 end

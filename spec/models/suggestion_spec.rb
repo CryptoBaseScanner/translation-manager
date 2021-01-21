@@ -15,5 +15,16 @@ module TranslationManager
       expect(suggestion.reload).to be_approved
       expect(suggestion2.reload).not_to be_approved
     end
+
+
+    it 'becomes unapproved when gets dislikes' do
+      create(:approval, suggestion: suggestion2)
+      create(:approval, suggestion: suggestion)
+      create(:approval, suggestion: suggestion)
+      expect(suggestion.reload).to be_approved
+      create(:dislike, suggestion: suggestion)
+      create(:dislike, suggestion: suggestion)
+      expect(suggestion.reload).not_to be_approved
+    end
   end
 end

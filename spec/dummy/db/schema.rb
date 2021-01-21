@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_28_112814) do
+ActiveRecord::Schema.define(version: 2021_01_21_145746) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -41,6 +41,14 @@ ActiveRecord::Schema.define(version: 2020_11_28_112814) do
     t.index ["translation_manager_suggestion_id"], name: "suggestion_approval"
   end
 
+  create_table "translation_manager_dislikes", force: :cascade do |t|
+    t.integer "translation_manager_suggestion_id", null: false
+    t.integer "disliked_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["translation_manager_suggestion_id"], name: "suggestion_dislike"
+  end
+
   create_table "translation_manager_imports", force: :cascade do |t|
     t.string "status", default: "processing", null: false
     t.string "namespace"
@@ -57,6 +65,8 @@ ActiveRecord::Schema.define(version: 2020_11_28_112814) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "approvals_count"
     t.boolean "approved"
+    t.integer "dislikes_count", default: 0
+    t.integer "vote_sum", default: 0
     t.index ["translation_manager_translation_id"], name: "suggestion_translation"
   end
 
@@ -76,5 +86,6 @@ ActiveRecord::Schema.define(version: 2020_11_28_112814) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "translation_manager_approvals", "translation_manager_suggestions"
+  add_foreign_key "translation_manager_dislikes", "translation_manager_suggestions"
   add_foreign_key "translation_manager_suggestions", "translation_manager_translations"
 end

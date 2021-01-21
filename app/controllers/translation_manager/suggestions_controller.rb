@@ -13,12 +13,17 @@ module TranslationManager
     def create
       Translation.find_by(permitted_params).suggestions.create(
         translator_id: current_user.id,
-        suggestion: params[:suggestion]
+        suggestion:    params[:suggestion]
       )
     end
 
     def approve
       suggestion = Suggestion.find(params[:id]).approvals.create(approved_by: current_user.id)
+      render json: { errors: suggestion.errors } unless suggestion.valid?
+    end
+
+    def dislike
+      suggestion = Suggestion.find(params[:id]).dislikes.create(disliked_by: current_user.id)
       render json: { errors: suggestion.errors } unless suggestion.valid?
     end
 

@@ -14,7 +14,7 @@ module TranslationManager
   end
 
   def self.base_controller
-    if config.translation_base_controller
+    if config.respond_to?(:translation_base_controller)
       config.translation_base_controller.constantize
     else
       ::ApplicationController
