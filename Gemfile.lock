@@ -3,7 +3,7 @@ PATH
   specs:
     translation_manager (0.1.1)
       google-cloud-translate
-      rails (~> 6.1)
+      rails (~> 6)
 
 GEM
   remote: https://rubygems.org/
