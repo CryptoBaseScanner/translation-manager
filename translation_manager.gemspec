@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
 
   spec.add_dependency 'google-cloud-translate'
-  spec.add_dependency 'rails', '~> 6'
+  spec.add_dependency 'rails', '~> 7'
 
   spec.add_development_dependency 'factory_bot_rails'
   spec.add_development_dependency 'rspec-rails'

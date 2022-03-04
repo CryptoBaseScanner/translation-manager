@@ -24,7 +24,7 @@ module TranslationManager
     private
 
     def data
-      flatten_hash(YAML.safe_load(Base64.decode64(file), [Symbol]))
+      flatten_hash(YAML.safe_load(Base64.decode64(file), permitted_classes: [Symbol]))
     end
 
     def flatten_hash(hash)
