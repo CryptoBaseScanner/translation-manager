@@ -2,7 +2,7 @@
 
 module TranslationManager
   class Import < ApplicationRecord
-    enum status: { processing: 'processing', finished: 'finished' }
+    enum :status, { processing: 'processing', finished: 'finished' }
 
     def import!(user_id)
       Translation.bulk_import(data, data['version'], namespace, user_id)
